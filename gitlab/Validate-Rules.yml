@@ -1,0 +1,28 @@
+only-candidate-pr:
+  stage: validate
+  tags:
+    - docker
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
+      when: on_success
+  script:
+    - echo "Vérification que seule la branche candidate peut être fusionnée dans main."
+    - if [[ "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME" != candidate* ]]; then
+      echo "❌ Seule une branche candidate peut être fusionnée dans main.";
+      exit 1;
+      fi
+    - echo "✅ La branche est valide pour la fusion."
+title-check:
+  stage: validate
+  tags:
+    - docker
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE != null
+      when: on_success
+  script:
+    - echo "Validation des règles du titre de la Merge Request."
+    - if ! echo "$CI_MERGE_REQUEST_TITLE" | grep -Eq '^(feature|fonctionnalite|fix|amelioration|release|candidate)[[:space:]]-[[:space:]][^[:space:]].*[[:space:]]-[[:space:]]([A-Z]{3}-[0-9]+|quick|release|candidate)'; then
+      echo "❌ Le titre de la MR ne respecte pas les règles.";
+      exit 1;
+      fi
+    - echo "✅ Le titre de la MR respecte les règles."

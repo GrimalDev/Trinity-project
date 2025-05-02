@@ -1,0 +1,77 @@
+services:
+  frontend:
+    container_name: "trinity-frontend-dev"
+    # restart: always
+    environment:
+      ENVIRONMENT: development
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+    volumes:
+      - "/app/node_modules"
+      - "./frontend:/app"
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    # networks:
+    #     - web
+
+  backend:
+    container_name: "trinity-backend-dev"
+    #    restart: always
+    environment:
+      ENVIRONMENT: development
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+      JWT_SECRET: ${JWT_SECRET}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER}
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID}
+      PAYPAL_SECRET: ${PAYPAL_SECRET}
+      PAYPAL_API_BASE: ${PAYPAL_API_BASE}
+      PAYPAL_RETURN_URL: ${PAYPAL_RETURN_URL}
+      PAYPAL_CANCEL_URL: ${PAYPAL_CANCEL_URL}
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+    volumes:
+      - "./backend:/opt/app/api"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    # networks:
+    #     - db
+
+  database:
+    image: mongo:8.0.3
+    container_name: "trinity-database-dev"
+    #    restart: always
+    env_file: ".env"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "trinity"
+      MONGO_INITDB_ROOT_PASSWORD: "trinity"
+      MONGO_INITDB_DATABASE: "trinity"
+    ports:
+      - "27017:27017"
+    #volumes:
+    #- ./mongo-seed:/docker-entrypoint-initdb.d
+
+  # init-db:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: dockerfile
+  #   command: ["go", "run", "db/seeds/init.go"]
+  #   depends_on:
+  #     - database
+#     networks:
+#         - db
+#
+# networks:
+#   web:
+#     external: true
+#   db:
+#     external: true
+

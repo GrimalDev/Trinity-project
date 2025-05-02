@@ -1,0 +1,15 @@
+meta {
+  name: get total product sold
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:8080/stats/total_product_sold
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2FhYTA3ZjgyYjM3NDhmZDVkZmU0ZGMiLCJleHAiOjE3Mzk0OTUyMDd9.PWnmZDY35zfRFFq9tuVR9IYP0CGnVdUPCaEa939lQVM
+}

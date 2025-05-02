@@ -1,0 +1,15 @@
+meta {
+  name: get products per category
+  type: http
+  seq: 7
+}
+
+get {
+  url: http://localhost:8080/stats/products_per_category
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2FhYzA2ODI0ZTFjZTMxZGYyYjYyMzUiLCJleHAiOjE3Mzk1MDI4OTV9.1Yby8-7LLulFZ_onc1hbaVfnDzp_jDrj40AhCz2WDcM
+}

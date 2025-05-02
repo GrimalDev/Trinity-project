@@ -1,0 +1,23 @@
+meta {
+  name: login admin
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://trinity.baptistegrimaldi.com/api/user/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "linus.torvalds@mail.com",
+    "password": "b2867617492e26c338ab49f72afabc984d798b59755a27e312b953716ae964d7"
+  }
+}
+
+body:form-urlencoded {
+  email: linus.torvalds@mail.com
+  password: b2867617492e26c338ab49f72afabc984d798b59755a27e312b953716ae964d7
+}

@@ -1,0 +1,15 @@
+meta {
+  name: food
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://world.openfoodfacts.org/api/v2/product/{{barcode}}.json
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  barcode: 9000159011606
+}

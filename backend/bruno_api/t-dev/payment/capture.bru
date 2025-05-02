@@ -1,0 +1,21 @@
+meta {
+  name: capture
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/payment/capture
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2Q2YTUwNDU0N2FkMGI3MmYwMDYxZWUiLCJleHAiOjE3NDIzODA5Mzl9.IjvuNfQPqfRLd_5nCSbkjIkDoyDfb7w-IfHt9QBkc-0
+}
+
+body:json {
+  {
+    "serviceOrderId": "08K94473RD5254607"
+  }
+}

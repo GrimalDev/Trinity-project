@@ -1,0 +1,224 @@
+<script lang="ts">
+  import { scaleLinear } from "d3-scale";
+  import type { StatsProduct } from "$lib/types/product";
+
+  // let { data }: { data: StatsProduct[] } = $props();
+
+  // Constants
+  const categories = [
+    "Fruits",
+    "Vegetables",
+    "Dairy",
+    "Meat",
+    "Seafood",
+    "Grains",
+    "Bakery",
+    "Beverages",
+    "Snacks",
+    "Frozen Foods",
+    "Canned Goods",
+    "Condiments",
+    "Spices",
+    "Nuts & Seeds",
+    "Pasta",
+    "Rice",
+    "Cereal",
+    "Tea",
+    "Coffee",
+    "Juices",
+    "Soft Drinks",
+    "Energy Drinks",
+    "Organic Foods",
+    "Gluten-Free",
+    "Vegan",
+    "Deli",
+    "Cheese",
+    "Yogurt",
+    "Eggs",
+    "Butter & Margarine",
+    "Oils & Vinegars",
+    "Sauces",
+    "Jams & Spreads",
+    "Honey",
+    "Chocolate",
+    "Candy",
+    "Ice Cream",
+    "Prepared Meals",
+    "Soup",
+    "Tofu & Plant-Based",
+    "Herbs",
+    "Flour & Baking",
+    "Sugar & Sweeteners",
+    "Baby Food",
+    "Pet Food",
+    "Alcoholic Beverages",
+    "Beer",
+    "Wine",
+    "Liquor",
+    "Cocktail Mixers",
+    "Protein Bars",
+    "Meal Replacements",
+    "Salad Dressings",
+    "Dried Fruits",
+    "Popcorn",
+    "Chips",
+    "Cookies",
+    "Granola",
+    "Milk Alternatives",
+    "Pickles & Olives",
+    "Coconut Products",
+    "Asian Foods",
+    "Mexican Foods",
+    "Indian Foods",
+    "Middle Eastern Foods",
+  ];
+
+  const data = categories.map((name) => ({
+    name,
+    total: Math.floor(Math.random() * 801), // Random number between 0 and 800
+  }));
+
+  const padding = { top: 20, right: 15, bottom: 20, left: 45 };
+  const yTicks = [0, 200, 400, 600, 800];
+
+  // Reactive state
+  let chartContainer: HTMLDivElement;
+  let width = 900;
+  let height = 300;
+
+  const xTicks = data.map((d) => d.name);
+
+  const xScale = $derived(
+    scaleLinear()
+      .domain([0, xTicks.length])
+      .range([padding.left, width - padding.right]),
+  );
+
+  const yScale = scaleLinear()
+    .domain([0, Math.max(...yTicks)])
+    .range([height - padding.bottom, padding.top]);
+
+  const innerWidth = width - (padding.left + padding.right);
+  const barWidth = $derived(innerWidth / xTicks.length);
+
+  // $effect(() => {
+  //   // Derived values
+  //   xTicks = data.map((d) => d.name);
+  //   // console.log("data", xTicks);
+  // });
+
+  // Tooltip state
+  const tooltip = $state({
+    visible: false,
+    content: "",
+    x: 0,
+    y: 0,
+  });
+
+  const offsetX = -30;
+  const offsetY = -35;
+  // Constants
+
+  function formatMobile(tick: number | string) {
+    return `'${tick.toString().slice(-2)}`;
+  }
+</script>
+
+{barWidth}
+
+<div
+  class="chart"
+  bind:this={chartContainer}
+  bind:clientWidth={width}
+  bind:clientHeight={height}
+  style="position: relative;"
+>
+  <svg>
+    <!-- y axis -->
+    <g class="axis y-axis">
+      {#each yTicks as tick}
+        <g class="text-xs" transform="translate(0, {yScale(tick)})">
+          <text
+            stroke="none"
+            font-size="12"
+            x="57"
+            y="-4"
+            fill="#888888"
+            text-anchor="end"
+          >
+            <tspan x="36" dy="0.355em">{tick}</tspan>
+          </text>
+        </g>
+      {/each}
+    </g>
+
+    <!-- x axis -->
+    <g class="axis x-axis">
+      {#each data as point, i}
+        <g class="text-xs" transform="translate({xScale(i)},{height})">
+          <text
+            stroke="none"
+            font-size="12"
+            x={barWidth / 2}
+            y="-15"
+            fill="#888888"
+            text-anchor="middle"
+          >
+            <tspan x={barWidth / 2} dy="0.71em">
+              {data.length > 30 ? point.name[0] : point.name}
+            </tspan>
+          </text>
+        </g>
+      {/each}
+    </g>
+
+    <!-- bars -->
+    <g>
+      {#each data as point, i}
+        <rect
+          class="bg-primary-foreground"
+          x={xScale(i) + 2}
+          y={yScale(point.total)}
+          width={barWidth}
+          height={yScale(0) - yScale(point.total)}
+          fill="currentColor"
+          rx="4"
+          ry="4"
+        />
+      {/each}
+    </g>
+  </svg>
+
+  {#if tooltip.visible}
+    <div class="tooltip" style="left: {tooltip.x}px; top: {tooltip.y}px;">
+      {tooltip.content}
+    </div>
+  {/if}
+</div>
+
+<style>
+  /* Same style block */
+  .chart {
+    width: 100%;
+    margin: 0 auto;
+  }
+  svg {
+    position: relative;
+    width: 100%;
+    height: 350px;
+  }
+  rect {
+    max-width: 51px;
+  }
+  .tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 10;
+  }
+</style>

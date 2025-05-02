@@ -1,0 +1,16 @@
+dependency_scanning:
+  stage: security
+  tags:
+    - docker
+  image: registry.gitlab.com/security-products/dependency-scanning:latest
+  script:
+    - /analyzer run
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+    paths:
+      - gl-dependency-scanning-report.json
+    expire_in: 1 week
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'dev' || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main')
+      when: always

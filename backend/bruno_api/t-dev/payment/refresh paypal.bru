@@ -1,0 +1,19 @@
+meta {
+  name: refresh paypal
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://www.sandbox.paypal.com/signin/authorize?flowEntry=static&client_id=[Afvtfw8rthmRoRP_bTNBGBM3_T9eFxxaLVfJhe7akCDaRgHj1jnO0IwwrFjfL-V0ITrOqOyPFyuEea-2]&scope=openid,profile,email&response_type=code&redirect_uri=[https://trinity.baptistegrimaldi.com/api/payment/return]
+  body: none
+  auth: inherit
+}
+
+params:query {
+  flowEntry: static
+  client_id: [Afvtfw8rthmRoRP_bTNBGBM3_T9eFxxaLVfJhe7akCDaRgHj1jnO0IwwrFjfL-V0ITrOqOyPFyuEea-2]
+  scope: openid,profile,email
+  response_type: code
+  redirect_uri: [https://trinity.baptistegrimaldi.com/api/payment/return]
+}

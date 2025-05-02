@@ -1,0 +1,21 @@
+meta {
+  name: register-token
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://trinity.baptistegrimaldi.com/api/push-notification/register-token
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2RmZTNhMWE0ZDc2NWVhZjNhNDgwODUiLCJleHAiOjE3NDMwMDI5MzZ9.v4OwsxDEv6FQqrf5Avl5FCo4EjE8QFD1UtVCcWgVR1Q
+}
+
+body:json {
+  {
+    "token": "eVyHpNL_TRKtIh9sGgMNT7:APA91bGt8dHIhGJ5_ItIuMrCDL1oYmUY9wPUGdBz1TCW0PBGhiNFWijZONAbhojpDP_t1hO4xaTbxoyfAc43fyRHEgt-abasfSjjF67SKN4PFF6TF3ZMSJ8"
+  }
+}

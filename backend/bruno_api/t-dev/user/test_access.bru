@@ -1,0 +1,15 @@
+meta {
+  name: test_access
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/res
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzllNWIwNWMwZjY2Mzg5ZjAxMjQyZjIiLCJleHAiOjE3Mzg2OTEzODN9.Sc6t3AVS1ZNKRIkaw1xl-96iLuvH_zKdPnij2IJ7N8E
+}

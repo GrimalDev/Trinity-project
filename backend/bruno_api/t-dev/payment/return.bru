@@ -1,0 +1,15 @@
+meta {
+  name: return
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://trinity.baptistegrimaldi.com/api/payment/return
+  body: none
+  auth: inherit
+}
+
+body:multipart-form {
+  flowEntry: r
+}

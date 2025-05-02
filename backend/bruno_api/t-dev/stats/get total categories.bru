@@ -1,0 +1,15 @@
+meta {
+  name: get total categories
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:8080/stats/total_categories
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2FhYTdhMjAyMmZkYzI1NmQxNDhlN2MiLCJleHAiOjE3Mzk0OTY5MjZ9.N2sbh0L7FyoRhfd_2J47rN7bEfVewPPrjbL4c9X6vlE
+}

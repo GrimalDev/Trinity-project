@@ -1,0 +1,23 @@
+meta {
+  name: login user
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:8080/user/login
+  body: json
+  auth: bearer
+}
+
+body:json {
+  {
+    "email": "john.doe@mail.com",
+    "password": "b2867617492e26c338ab49f72afabc984d798b59755a27e312b953716ae964d7"
+  }
+}
+
+body:form-urlencoded {
+  email: john.doe@mail.com
+  password: b2867617492e26c338ab49f72afabc984d798b59755a27e312b953716ae964d7
+}

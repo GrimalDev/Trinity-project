@@ -1,0 +1,138 @@
+package test
+
+import (
+	"fmt"
+	"testing"
+	"trinity/backend/items/models"
+)
+
+func TestCreateUser(t *testing.T) {
+	t.Run("Create User", func(t *testing.T) {
+		user, err := models.CreateUser(
+			"John",
+			"Doe",
+			"john.doe@mail.com",
+			"hashed_password",
+			"0342529344",
+			"123 rue de la paix",
+		)
+		if err != nil {
+			t.Fatalf("Failed to create user: %v", err)
+		}
+		fmt.Println("User created: ", user)
+	})
+}
+
+func TestUserDetails(t *testing.T) {
+	basicUser, err := models.CreateUser(
+		"John",
+		"Doe",
+		"john.doe@mail.com",
+		"hashed_password",
+		"0342529344",
+		"123 rue de la paix",
+	)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+	t.Run("Get User Details", func(t *testing.T) {
+		user, err := basicUser.GetUserDetails()
+		if err != nil {
+			t.Fatalf("Failed to get user details: %v", err)
+		}
+
+		if user.Email != "john.doe@mail.com" {
+			t.Errorf("Expected email john.doe@mail.com, got %s", user.Email)
+		}
+
+		t.Logf("User details: %v", user)
+	})
+}
+
+func TestLoginUser(t *testing.T) {
+	basicUser, err := models.CreateUser(
+		"John",
+		"Doe",
+		"john.doe@mail.com",
+		"hashed_password",
+		"0342529344",
+		"123 rue de la paix",
+	)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	t.Run("Successful Login", func(t *testing.T) {
+		user, err := basicUser.GetUserDetails()
+		if err != nil {
+			t.Fatalf("Failed to get user details: %v", err)
+		}
+
+		authBasicAuth, err := models.Login(user.Email, "hashed_password")
+		if err != nil {
+			t.Fatalf("Login failed: %v", err)
+		}
+
+		t.Logf("Login successful: %v", authBasicAuth)
+	})
+
+	t.Run("Failed Login - Wrong Password", func(t *testing.T) {
+		user, err := basicUser.GetUserDetails()
+		if err != nil {
+			t.Fatalf("Failed to get user details: %v", err)
+		}
+
+		_, err = models.Login(user.Email, "wrong_password")
+		if err == nil {
+			t.Error("Expected error for wrong password, got nil")
+		}
+	})
+}
+
+func TestUpdateUserDetails(t *testing.T) {
+	basicUser, err := models.CreateUser(
+		"John",
+		"Doe",
+		"john.doe@mail.com",
+		"hashed_password",
+		"0342529344",
+		"123 rue de la paix",
+	)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	t.Run("Update User - Detailed", func(t *testing.T) {
+		selfUser, err := basicUser.GetUserDetails()
+		if err != nil {
+			t.Fatalf("Failed to get user details: %v", err)
+		}
+
+		selfUser.Email = "jane.doe@mail.com"
+		err = selfUser.UpdateSelfUser()
+		if err != nil {
+			t.Fatalf("Failed to update user: %v", err)
+		}
+	})
+}
+
+func TestArchiveUser(t *testing.T) {
+	basicUser, err := models.CreateUser(
+		"John",
+		"Doe",
+		"john.doe@mail.com",
+		"hashed_password",
+		"0342529344",
+		"123 rue de la paix",
+	)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	t.Run("Archive User", func(t *testing.T) {
+		err := models.ArchiveInvoiceById(basicUser.Id)
+		if err != nil {
+			t.Fatalf("Failed to archive user: %v", err)
+		}
+	})
+}

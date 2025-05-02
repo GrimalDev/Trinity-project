@@ -1,0 +1,132 @@
+services:
+  frontend:
+    image: registry.kwer.fr/trinity/frontend_prod:latest
+    container_name: "trinity-frontend-prod"
+    expose:
+      - 80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.trinity-web.rule=Host(`trinity.baptistegrimaldi.com`)"
+      - "traefik.http.routers.trinity-web.entrypoints=web"
+      - "traefik.http.routers.trinity-web.middlewares=redirect@file"
+      - "traefik.http.routers.trinity-web-secured.rule=Host(`trinity.baptistegrimaldi.com`) && PathPrefix(`/`)"
+      - "traefik.http.routers.trinity-web-secured.priority=10"
+      - "traefik.http.routers.trinity-web-secured.entrypoints=web-secured"
+      - "traefik.http.routers.trinity-web-secured.tls.certresolver=grimresolver"
+    networks:
+      - web
+      - db
+
+  backend:
+    image: registry.kwer.fr/trinity/backend_prod:latest
+    container_name: "trinity-backend-prod"
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+      JWT_SECRET: ${JWT_SECRET}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER}
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID}
+      PAYPAL_SECRET: ${PAYPAL_SECRET}
+      PAYPAL_API_BASE: ${PAYPAL_API_BASE}
+      PAYPAL_RETURN_URL: ${PAYPAL_RETURN_URL}
+      PAYPAL_CANCEL_URL: ${PAYPAL_CANCEL_URL}
+    volumes:
+      - ./backend/com-baptistegrimaldi-trinity-firebase.json:/root/com-baptistegrimaldi-trinity-firebase.json
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.trinity-api.rule=Host(`trinity.baptistegrimaldi.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.trinity-api.priority=20"
+      - "traefik.http.routers.trinity-api.entrypoints=web-secured"
+      - "traefik.http.routers.trinity-api.tls=true"
+      - "traefik.http.routers.trinity-api.tls.certresolver=grimresolver"
+      - "traefik.http.routers.trinity-api.middlewares=strip-api"
+      - "traefik.http.services.trinity-api.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.strip-api.stripprefix.prefixes=/api"
+    depends_on:
+      - database
+    networks:
+      - web
+      - db
+
+  database:
+    image: nertworkweb/mongodb-no-avx
+    container_name: "trinity-database-prod"
+    restart: always
+    env_file: ".env"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mongo-data:/data/db
+    command: --bind_ip 172.56.0.10
+    # networks:
+    #   - db
+    networks:
+      db:
+        ipv4_address: 172.56.0.10
+
+  metabase:
+    image: metabase/metabase:v0.45.0
+    container_name: "trinity-metabase-prod"
+    env_file: ".env"
+    expose:
+      - 80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.metabase-trinity-web.rule=Host(`metabase-trinity.baptistegrimaldi.com`)"
+      - "traefik.http.routers.metabase-trinity-web.entrypoints=web"
+      - "traefik.http.routers.metabase-trinity-web.middlewares=redirect@file"
+      - "traefik.http.routers.metabase-trinity-web-secured.rule=Host(`metabase-trinity.baptistegrimaldi.com`)"
+      - "traefik.http.routers.metabase-trinity-web-secured.entrypoints=web-secured"
+      - "traefik.http.routers.metabase-trinity-web-secured.tls.certresolver=grimresolver"
+    environment:
+      # MB_DB_TYPE: mongo
+      # MB_DB_DBNAME: ${DB_NAME}
+      # MB_DB_USER: ${DB_USERNAME}
+      # MB_DB_PASS: ${DB_PASSWORD}
+      # MB_DB_PORT: 27017
+      MB_JETTY_PORT: 80
+    depends_on:
+      - database
+    networks:
+      - web
+      - db
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Use host Docker
+      - ./gitlab-runner:/etc/gitlab-runner # Config persistence
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    environment:
+      WATCHTOWER_CLEANUP: true
+      #      WATCHTOWER_REGISTRY_AUTH: true
+      WATCHTOWER_POLL_INTERVAL: 30
+    #      WATCHTOWER_USERNAME: ${REPO_NAME}
+    #      WATCHTOWER_PASSWORD: ${REPO_PWD}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./watchtower-config.json:/config.json
+
+    restart: unless-stopped
+
+networks:
+  web:
+    external: true
+  db:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.56.0.0/16
+
+volumes:
+  mongo-data:

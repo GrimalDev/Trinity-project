@@ -1,0 +1,41 @@
+variables:
+  GO_VERSION: "1.23"
+  DOCKER_IMAGE_FRONTEND: "registry.kwer.fr/trinity/frontend_prod"
+  DOCKER_IMAGE_BACKEND: "registry.kwer.fr/trinity/backend_prod"
+  DOCKER_TAG: "latest"
+
+# Build and push frontend Docker image
+build_push_frontend:
+  stage: build
+  tags:
+    - docker
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - cd frontend
+  script:
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" registry.kwer.fr
+    - docker build -t ${DOCKER_IMAGE_FRONTEND}:${DOCKER_TAG} -f dockerfile_prod .
+    - docker push ${DOCKER_IMAGE_FRONTEND}:${DOCKER_TAG}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main'
+      when: always
+
+build_push_backend:
+  stage: build
+  tags:
+    - docker
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - cd backend
+  script:
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" registry.kwer.fr
+    - docker build -t ${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG} -f dockerfile_prod .
+    - docker push ${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main'
+      when: always
+# Build and push backend Docker image

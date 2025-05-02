@@ -1,0 +1,21 @@
+FROM golang:1.23
+
+WORKDIR /opt/app/api
+
+# Copiez go.mod et go.sum pour télécharger les dépendances
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
+
+# Installez air pour le développement
+RUN go install github.com/air-verse/air@latest
+
+# Copiez le reste des fichiers
+COPY . .
+
+# Construisez l'application
+# RUN go build -o build ./main.go
+
+# Utilisez air pour le développement
+
+CMD ["air", "-c", ".air.toml"]

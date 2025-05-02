@@ -1,0 +1,119 @@
+# # Install dependencies for the frontend
+# install_frontend:
+#   stage: install
+#   tags:
+#     - docker
+#   image: oven/bun:latest
+#   before_script:
+#     - cd frontend
+#   script:
+#     - bun install
+#   cache:
+#     paths:
+#       - frontend/node_modules/
+
+# Install dependencies for the backend
+install_backend:
+  stage: install
+  tags:
+    - docker
+  image: golang:1.23
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'dev' || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main')
+      when: always
+  before_script:
+    - cd backend
+  script:
+    - go mod download
+  cache:
+    paths:
+      - backend/go.sum
+      - backend/go.mod
+
+# # Run frontend tests
+# test_frontend:
+#   stage: test
+#   tags:
+#     - docker
+#   image: oven/bun:latest
+#   before_script:
+#     - cd frontend
+#   script:
+#     - bun test
+#   cache:
+#     paths:
+#       - frontend/node_modules/
+
+install_mobile:
+  stage: install
+  tags:
+    - docker
+  image: ghcr.io/cirruslabs/flutter
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'dev' || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main')
+      when: always
+  before_script:
+    - cd mobile
+  script:
+    - flutter pub get
+  cache:
+    paths:
+      - mobile/.dart_tool/
+      - mobile/pubspec.lock
+
+# test_backend:
+#   stage: test
+#   tags:
+#     - docker
+#   image: golang:1.23
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'dev' || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main')
+#       when: always
+#   before_script:
+#     - cd backend
+#   script:
+#     - go test
+#   cache:
+#     paths:
+#       - backend/go.sum
+#       - backend/go.mod
+
+test_lint_go:
+  stage: test
+  tags:
+    - docker
+  image: golang:1.23
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'dev' || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main')
+      when: always
+  before_script:
+    - cd backend
+  script:
+    - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+    - golangci-lint run --timeout 5m
+
+test_lint_flutter:
+  stage: test
+  tags:
+    - docker
+  image: ghcr.io/cirruslabs/flutter
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'dev' || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main')
+      when: always
+  before_script:
+    - cd mobile
+  script:
+    - flutter analyze
+
+unit_test_flutter:
+  stage: test
+  tags:
+    - docker
+  image: ghcr.io/cirruslabs/flutter
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'dev' || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main')
+      when: always
+  before_script:
+    - cd mobile
+  script:
+    - flutter test

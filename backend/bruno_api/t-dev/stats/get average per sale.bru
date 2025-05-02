@@ -1,0 +1,15 @@
+meta {
+  name: get average per sale
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:8080/stats/average_spending
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2FhOWQyZjgxNGIwZTFlNWZhZTFkMTQiLCJleHAiOjE3Mzk0OTQxMDB9.MDzQC865qAmPu2a_ryg6X9gKx68IQ4dgNyW8JVMh-6E
+}

@@ -1,0 +1,22 @@
+meta {
+  name: notify
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://trinity.baptistegrimaldi.com/api/push-notification/notify
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2RmZTNhMWE0ZDc2NWVhZjNhNDgwOGQiLCJleHAiOjE3NDMwMDI5OTN9.hy3_0yn_lfEhgqCg3JSHkXeLgFjSqoWufA0mjfwmFNA
+}
+
+body:json {
+  {
+    "title": "Promotion Trinity",
+    "body":  "OUUUh les belles promos"
+  }
+}

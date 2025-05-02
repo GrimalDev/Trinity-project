@@ -1,0 +1,15 @@
+meta {
+  name: get total commande
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:8080/stats/commande_total
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2FhOTdkZmZiYjAxMGVjYjBiNTQ1OWYiLCJleHAiOjE3Mzk0OTMxMDF9.HI04Wn3N0xh9aU7Wnh54I70LEHU_CSr4iIgY7S99CHA
+}

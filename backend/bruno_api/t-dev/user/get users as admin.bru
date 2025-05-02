@@ -1,0 +1,15 @@
+meta {
+  name: get users as admin
+  type: http
+  seq: 9
+}
+
+get {
+  url: http://localhost:8080/user
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2FhODJlNmRmYWExYWU5M2U0YTg2N2QiLCJleHAiOjE3Mzk0ODcwODJ9.9_bC5Vb7Y3I--ny1P2JHKydxqR65kEcx4co7roQfJaE
+}

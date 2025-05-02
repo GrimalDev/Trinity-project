@@ -1,0 +1,4 @@
+variables:
+  DOCKER_HOST: unix:///var/run/docker.sock # Use host Docker daemon
+  DOCKER_TLS_CERTDIR: "" # Disable TLS (not needed for socket)
+  DOCKER_DRIVER: overlay2

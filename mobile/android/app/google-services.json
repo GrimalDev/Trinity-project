@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "366319553596",
+    "project_id": "com-baptistegrimaldi-trinity",
+    "storage_bucket": "com-baptistegrimaldi-trinity.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366319553596:android:b6521f772c00785bcc0739",
+        "android_client_info": {
+          "package_name": "com.baptistegrimaldi.trinity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh3_xrGMzTeKX8t2LuMmMNJCb4oQG5WnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

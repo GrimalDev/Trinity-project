@@ -1,0 +1,191 @@
+package routes
+
+import (
+	"fmt"
+	"net/http"
+	"trinity/backend/models"
+	echo "github.com/labstack/echo/v4"
+)
+
+// Simuler une base de données en mémoire pour les users
+var users = []models.User{}
+
+// Handlers pour récupérer les uers
+func GetUsers(c echo.Context) error {
+    return c.JSON(http.StatusOK, users)
+}
+
+// Handler pour ajouter un utilisateur
+func AddUser(c echo.Context) error {
+    var user models.User
+    if err := c.Bind(&user); err != nil {
+        return c.JSON(http.StatusBadRequest, err)
+    }
+    users = append(users, user) // Ajouter l'utilisateur à la "base de données"
+    return c.JSON(http.StatusCreated, user)
+}
+
+// Handler pour mettre à jour un utilisateur
+func UpdateUser(c echo.Context) error {
+    id := c.Param("id")   //récupère le id de user
+    fmt.Println("Updating user with ID:", id)
+
+    //ça va afficher l'ID de l'utilisateur et la liste actuelle des utilisateurs dans la console pour le débogage
+    fmt.Println("Current users in memory:")
+    for _, user := range users {
+        fmt.Println("User ID:", user.ID)
+    }
+
+    //lie le corps de la requête JSON à la structure User. Si cela échoue, une erreur 400 est renvoyée.
+    var updatedUser models.User
+    if err := c.Bind(&updatedUser); err != nil {
+        return c.JSON(http.StatusBadRequest, err)
+    }
+    //parcourt la liste des utilisateurs pour trouver celui avec l'ID correspondant. Si trouvé, il est mis à jour avec les nouvelles données.
+    for i, user := range users {
+        if user.ID == id {
+            users[i] = updatedUser
+            return c.JSON(http.StatusOK, updatedUser)
+        }
+    }
+    return c.JSON(http.StatusNotFound, "User not found")
+}
+
+// Handler pour archiver un utilisateur
+func ArchiveUser(c echo.Context) error {
+    id := c.Param("id")
+    fmt.Println("Archiving user with ID:", id)
+
+    for i, user := range users {
+        if user.ID == id {
+            users[i].Archived = true // Archiver l'utilisateur
+            return c.JSON(http.StatusOK, users[i]) // Retourner l'utilisateur archivé
+        }
+    }
+    return c.JSON(http.StatusNotFound, "User not found") // Retourner une erreur si l'utilisateur n'est pas trouvé
+}
+// Simuler une base de données en mémoire pour les invoices
+var invoices = []models.Invoice{}
+
+// Handlers pour récupérer les invoices
+func GetInvoices(c echo.Context) error {
+    return c.JSON(http.StatusOK, invoices)
+}
+
+// Handler pour ajouter un invoice
+func AddInvoice(c echo.Context) error {
+    var invoice models.Invoice
+    if err := c.Bind(&invoice); err != nil {
+        return c.JSON(http.StatusBadRequest, err)
+    }
+    invoices = append(invoices, invoice) // Ajouter l'invoice à la "base de données"
+    return c.JSON(http.StatusCreated, invoice)
+}
+
+// Handler pour mettre à jour un invoice
+func UpdateInvoice(c echo.Context) error {
+    id := c.Param("id")   //récupère le id de l'invoice
+    fmt.Println("Updating invoice with ID:", id)
+
+    //ça va afficher l'ID de l'invoice et la liste actuelle des invoices dans la console pour le débogage
+    fmt.Println("Current invoices in memory:")
+    for _, invoice := range invoices {
+        fmt.Println("User ID:", invoice.ID)
+    }
+
+    //lie le corps de la requête JSON à la structure invoice. Si cela échoue, une erreur 400 est renvoyée.
+    var updatedInvoice models.Invoice
+    if err := c.Bind(&updatedInvoice); err != nil {
+        return c.JSON(http.StatusBadRequest, err)
+    }
+    //parcourt la liste des invoices pour trouver celui avec l'ID correspondant. Si trouvé, il est mis à jour avec les nouvelles données.
+    for i, invoice := range invoices {
+        if invoice.ID == id {
+            invoices[i] = updatedInvoice
+            return c.JSON(http.StatusOK, updatedInvoice)
+        }
+    }
+    return c.JSON(http.StatusNotFound, "Invoice not found")
+}
+
+// Handler pour arrchiver un Invoice
+func ArchiveInvoice(c echo.Context) error {
+    id := c.Param("id")
+    fmt.Println("Archiving invoice with ID:", id)
+
+    for i, invoice := range invoices {
+        if invoice.ID == id {
+            invoices[i].Archived = true // Archiver l'Invoice
+            return c.JSON(http.StatusOK, invoices[i]) // Retourner l'Invoice archivé
+        }
+    }
+    return c.JSON(http.StatusNotFound, "Invoice not found") // Retourner une erreur si l'Invoice n'est pas trouvé
+}
+
+
+
+// Simuler une base de données en mémoire pour les products
+var products = []models.Product{}
+
+// Handlers pour récupérer les products
+func GetProducts(c echo.Context) error {
+    return c.JSON(http.StatusOK, products)
+}
+
+// Handler pour ajouter un product
+func AddProduct(c echo.Context) error {
+    var product models.Product
+    if err := c.Bind(&product); err != nil {
+        return c.JSON(http.StatusBadRequest, err)
+    }
+    products = append(products, product) // Ajouter le product à la "base de données"
+    return c.JSON(http.StatusCreated, product)
+}
+
+// Handler pour mettre à jour un product
+func UpdateProduct(c echo.Context) error {
+    id := c.Param("id")   //récupère le id de le product
+    fmt.Println("Updating product with ID:", id)
+
+    //ça va afficher l'ID de le product et la liste actuelle des products dans la console pour le débogage
+    fmt.Println("Current products in memory:")
+    for _, product := range products {
+        fmt.Println("Product ID:", product.ID)
+    }
+
+    //lie le corps de la requête JSON à la structure product. Si cela échoue, une erreur 400 est renvoyée.
+    var updatedProduct models.Product
+    if err := c.Bind(&updatedProduct); err != nil {
+        return c.JSON(http.StatusBadRequest, err)
+    }
+    //parcourt la liste des products pour trouver celui avec l'ID correspondant. Si trouvé, il est mis à jour avec les nouvelles données.
+    for i, product := range products {
+        if product.ID == id {
+            products[i] = updatedProduct
+            return c.JSON(http.StatusOK, updatedProduct)
+        }
+    }
+    return c.JSON(http.StatusNotFound, "Product not found")
+}
+
+// Handler pour arrchiver un product
+func ArchiveProduct(c echo.Context) error {
+    id := c.Param("id")
+    fmt.Println("Archiving product with ID:", id)
+
+    for i, product := range products {
+        if product.ID == id {
+            products[i].Archived = true // Archiver le product
+            return c.JSON(http.StatusOK, products[i]) // Retourner le product archivé
+        }
+    }
+    return c.JSON(http.StatusNotFound, "Product not found") // Retourner une erreur si le product n'est pas trouvé
+}
+
+// Simuler une base de données en mémoire pour les reports
+var reports = []models.Report{}
+
+// Handlers pour récupérer les reportss
+func GetReports(c echo.Context) error {
+    return c.JSON(http.StatusOK, reports)
+}

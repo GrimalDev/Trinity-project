@@ -1,0 +1,15 @@
+meta {
+  name: get invoices slef
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:8080/invoice/self/67e08286105b8f9754b78b1e
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2UwODI4NjEwNWI4Zjk3NTRiNzhiMmIiLCJleHAiOjE3NDMwMjY1Mzh9.qGNltflsqlLmubWoUNqkFihg5QD9bR_w8u0_XsSzCfA
+}
