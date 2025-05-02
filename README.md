@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/b74b9138-87cb-4b2c-b9f2-e14fdbc93efd)
+
 # Presentation
 
 The Trinity project provides a modern, responsive e-commerce mobile application and a desktop inventory management interface.
